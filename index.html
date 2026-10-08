@@ -14,21 +14,27 @@
         <img src="assets/pokeball_spin.gif" alt="Pokébola animada">
         <span aria-hidden="true">♫</span>
       </span>
-      <span>NavBGM<small>POKÉMMO MUSIC BUILDER</small></span>
+      <span>NavBGM<small data-i18n="brandTagline">POKÉMMO MUSIC BUILDER</small></span>
     </a>
-    <span class="local-badge"><i></i> funciona localmente no seu navegador</span>
-    <button class="help-button" id="helpButton" type="button">Como usar</button>
+    <span class="local-badge"><i></i> <span data-i18n="localStatus">funciona localmente no seu navegador</span></span>
+    <label class="language-picker"><span data-i18n="languageLabel">Idioma</span>
+      <select id="languageSelect" aria-label="Idioma" data-i18n-aria-label="languageLabel">
+        <option value="pt">Português</option>
+        <option value="en">English</option>
+      </select>
+    </label>
+    <button class="help-button" id="helpButton" type="button" data-i18n="helpButton">Como usar</button>
   </header>
 
   <main class="layout">
     <section class="intro">
-      <div class="eyebrow"><span></span> NAVBGM · CRIADOR DE MODS DE MÚSICA</div>
-      <h1>Sua trilha.<br><em>Sua jornada.</em></h1>
-      <p>Monte sua seleção de músicas e prepare um pacote pronto para adicionar ao PokéMMO.</p>
+      <div class="eyebrow"><span></span> <span data-i18n="introEyebrow">NAVBGM · CRIADOR DE MODS DE MÚSICA</span></div>
+      <h1 id="introTitle" data-i18n-html="introTitle">Sua trilha.<br><em>Sua jornada.</em></h1>
+      <p data-i18n="introDescription">Monte sua seleção de músicas e prepare um pacote pronto para adicionar ao PokéMMO.</p>
       <div class="steps">
-        <span class="step-active">01 <b>Identidade</b></span>
-        <span>02 <b>Faixas</b></span>
-        <span>03 <b>Exportar</b></span>
+        <span class="step-active">01 <b data-i18n="stepIdentity">Identidade</b></span>
+        <span>02 <b data-i18n="stepTracks">Faixas</b></span>
+        <span>03 <b data-i18n="stepExport">Exportar</b></span>
       </div>
     </section>
 
@@ -36,42 +42,42 @@
       <div class="section-heading">
         <span class="number">01</span>
         <div>
-          <h2>Identidade do MOD</h2>
-          <p>Esses dados aparecerão no gerenciador de mods do jogo.</p>
+          <h2 data-i18n="identityTitle">Identidade do MOD</h2>
+          <p data-i18n="identityDescription">Esses dados aparecerão no gerenciador de mods do jogo.</p>
         </div>
       </div>
       <div class="fields">
         <div class="mod-import wide">
           <div>
-            <strong>Já tem um MOD?</strong>
-            <span>Envie um arquivo .zip ou .mod para adicionar faixas sem perder o conteúdo existente.</span>
+            <strong data-i18n="importTitle">Já tem um MOD?</strong>
+            <span data-i18n="importDescription">Envie um arquivo .zip ou .mod para adicionar faixas sem perder o conteúdo existente.</span>
             <small id="importStatus">Nenhum MOD carregado</small>
           </div>
-          <label class="upload-button" for="modFile">Abrir MOD</label>
+          <label class="upload-button" for="modFile" data-i18n="openMod">Abrir MOD</label>
           <input id="modFile" type="file" accept=".zip,.mod,application/zip" hidden>
         </div>
         <label class="field wide">
-          <span>Nome do MOD <b>*</b></span>
-          <input id="modName" maxlength="80" placeholder="Ex.: Minha trilha de aventura" value="Meu MOD de Música" required>
+          <span data-i18n-html="modNameLabel">Nome do MOD <b>*</b></span>
+          <input id="modName" maxlength="80" placeholder="Ex.: Minha trilha de aventura" value="Meu MOD de Música" required data-i18n-placeholder="modNamePlaceholder">
         </label>
         <label class="field">
-          <span>Autor <b>*</b></span>
-          <input id="author" maxlength="80" placeholder="Seu nome" required>
+          <span data-i18n-html="authorLabel">Autor <b>*</b></span>
+          <input id="author" maxlength="80" placeholder="Seu nome" required data-i18n-placeholder="authorPlaceholder">
         </label>
         <label class="field">
-          <span>Versão</span>
+          <span data-i18n="versionLabel">Versão</span>
           <input id="version" maxlength="20" value="1.0">
         </label>
         <label class="field wide">
-          <span>Descrição</span>
-          <textarea id="description" maxlength="300" rows="2" placeholder="Conte um pouco sobre a seleção de músicas..."></textarea>
+          <span data-i18n="descriptionLabel">Descrição</span>
+          <textarea id="description" maxlength="300" rows="2" placeholder="Conte um pouco sobre a seleção de músicas..." data-i18n-placeholder="descriptionPlaceholder"></textarea>
         </label>
         <div class="field wide icon-field">
           <div>
-            <span class="label-text">Ícone do MOD <small>OPCIONAL · PNG quadrado recomendado</small></span>
+            <span class="label-text" data-i18n-html="iconLabel">Ícone do MOD <small>OPCIONAL · PNG quadrado recomendado</small></span>
             <div id="iconStatus" class="muted">Nenhum ícone selecionado</div>
           </div>
-          <label class="upload-button" for="iconFile">Escolher PNG</label>
+          <label class="upload-button" for="iconFile" data-i18n="choosePng">Escolher PNG</label>
           <input id="iconFile" type="file" accept="image/png" hidden>
         </div>
       </div>
@@ -81,13 +87,13 @@
       <div class="section-heading">
         <span class="number">02</span>
         <div>
-          <h2>Escolha as faixas</h2>
-          <p>Selecione a região, encontre as músicas e envie um arquivo OGG para cada faixa.</p>
+          <h2 data-i18n="tracksTitle">Escolha as faixas</h2>
+          <p data-i18n="tracksDescription">Selecione a região, encontre as músicas e envie um arquivo OGG para cada faixa.</p>
         </div>
       </div>
       <div class="track-tools">
         <label class="field region-field">
-          <span>Região</span>
+          <span data-i18n="regionLabel">Região</span>
           <select id="region">
             <option value="0">Kanto · 0</option>
             <option value="1">Hoenn · 1</option>
@@ -98,22 +104,22 @@
         </label>
         <label class="search">
           <span>⌕</span>
-          <input id="search" placeholder="Buscar faixa ou ID...">
+          <input id="search" placeholder="Buscar faixa ou ID..." data-i18n-placeholder="searchPlaceholder">
         </label>
-        <button class="text-button" id="manualButton" type="button">＋ ID manual</button>
+        <button class="text-button" id="manualButton" type="button" data-i18n="manualButton">＋ ID manual</button>
       </div>
       <div class="bulk-bar" id="bulkBar" hidden>
         <span id="selectedCount">0 IDs selecionados</span>
-        <button id="bulkUploadButton" class="text-button" type="button">♫ Aplicar a mesma música</button>
-        <button id="clearSelection" class="quiet-button" type="button">Limpar seleção</button>
+        <button id="bulkUploadButton" class="text-button" type="button" data-i18n="bulkButton">♫ Aplicar a mesma música</button>
+        <button id="clearSelection" class="quiet-button" type="button" data-i18n="clearSelection">Limpar seleção</button>
         <input id="bulkFile" type="file" accept=".ogg,audio/ogg" hidden>
       </div>
       <div class="track-meta">
         <span id="trackCount">Carregando faixas</span>
-        <span id="formatHint">Formato aceito: <b>.ogg</b></span>
+        <span id="formatHint" data-i18n-html="formatHint">Formato aceito: <b>.ogg</b></span>
       </div>
       <div class="track-list" id="trackList" aria-live="polite"></div>
-      <div class="empty-hint">Não encontrou a faixa? Use <strong>+ ID manual</strong>. Você pode conferir o ID atual no jogo com <code>/bgm</code>.</div>
+      <div class="empty-hint" data-i18n-html="emptyHint">Não encontrou a faixa? Use <strong>+ ID manual</strong>. Você pode conferir o ID atual no jogo com <code>/bgm</code>.</div>
     </section>
 
     <section class="export-bar">
@@ -124,53 +130,53 @@
           <span id="summaryText">Adicione pelo menos uma faixa para exportar.</span>
         </div>
       </div>
-      <button id="exportButton" class="export-button" type="button" disabled><span>↓</span> Baixar pacote .ZIP</button>
+      <button id="exportButton" class="export-button" type="button" disabled><span>↓</span> <span data-i18n="exportButton">Baixar pacote .ZIP</span></button>
     </section>
 
     <footer>
       <span>NAVBGM · POKÉMMO MUSIC BUILDER</span>
-      <span>Os arquivos são processados apenas no seu dispositivo.</span>
+      <span data-i18n="privacyNotice">Os arquivos são processados apenas no seu dispositivo.</span>
     </footer>
   </main>
 
   <dialog id="helpDialog" class="help-dialog" aria-labelledby="helpTitle">
     <div class="help-head">
-      <div><span class="eyebrow">GUIA RÁPIDO</span><h2 id="helpTitle">Como usar o NavBGM</h2></div>
-      <button id="closeHelp" class="close-help" type="button" aria-label="Fechar instruções">×</button>
+      <div><span class="eyebrow" data-i18n="helpEyebrow">GUIA RÁPIDO</span><h2 id="helpTitle" data-i18n="helpTitle">Como usar o NavBGM</h2></div>
+      <button id="closeHelp" class="close-help" type="button" aria-label="Fechar instruções" data-i18n-aria-label="closeHelp">×</button>
     </div>
     <div class="help-content">
       <section>
         <span class="help-step">01</span>
         <div>
-          <h3>Crie um MOD ou abra um existente</h3>
-          <p>Preencha nome, autor, versão e descrição. Para atualizar, clique em <strong>Abrir MOD</strong> e selecione um arquivo .zip ou .mod. O NavBGM carrega as informações e preserva os arquivos existentes.</p>
+          <h3 data-i18n="helpStep1Title">Crie um MOD ou abra um existente</h3>
+          <p data-i18n-html="helpStep1Text">Preencha nome, autor, versão e descrição. Para atualizar, clique em <strong>Abrir MOD</strong> e selecione um arquivo .zip ou .mod. O NavBGM carrega as informações e preserva os arquivos existentes.</p>
         </div>
       </section>
       <section>
         <span class="help-step">02</span>
         <div>
-          <h3>Escolha região e faixa</h3>
-          <p>Selecione uma região, procure pelo nome ou ID e envie um arquivo .ogg. IDs já presentes no MOD aparecem marcados; o sistema pergunta antes de sobrescrevê-los. Use <strong>ID manual</strong> para faixas fora do catálogo.</p>
+          <h3 data-i18n="helpStep2Title">Escolha região e faixa</h3>
+          <p data-i18n-html="helpStep2Text">Selecione uma região, procure pelo nome ou ID e envie um arquivo .ogg. IDs já presentes no MOD aparecem marcados; o sistema pergunta antes de sobrescrevê-los. Use <strong>ID manual</strong> para faixas fora do catálogo.</p>
         </div>
       </section>
       <section>
         <span class="help-step">03</span>
         <div>
-          <h3>Aplique uma música a vários IDs</h3>
-          <p>Marque as caixas das faixas desejadas e escolha <strong>Aplicar a mesma música</strong>. O NavBGM avisa se algum ID já existir e permite sobrescrever esses conflitos ou manter as faixas atuais.</p>
+          <h3 data-i18n="helpStep3Title">Aplique uma música a vários IDs</h3>
+          <p data-i18n-html="helpStep3Text">Marque as caixas das faixas desejadas e escolha <strong>Aplicar a mesma música</strong>. O NavBGM avisa se algum ID já existir e permite sobrescrever esses conflitos ou manter as faixas atuais.</p>
         </div>
       </section>
       <section>
         <span class="help-step">04</span>
         <div>
-          <h3>Baixe e instale o pacote</h3>
-          <p>Clique em <strong>Baixar pacote .ZIP</strong> e coloque o arquivo em <code>PokeMMO/data/mods</code>. Ative o MOD no gerenciador do jogo. Os arquivos selecionados são processados no navegador e não são enviados a um servidor.</p>
+          <h3 data-i18n="helpStep4Title">Baixe e instale o pacote</h3>
+          <p data-i18n-html="helpStep4Text">Clique em <strong>Baixar pacote .ZIP</strong> e coloque o arquivo em <code>PokeMMO/data/mods</code>. Ative o MOD no gerenciador do jogo. Os arquivos selecionados são processados no navegador e não são enviados a um servidor.</p>
         </div>
       </section>
-      <aside><strong>Dica:</strong> no jogo, use <code>/bgm</code> para descobrir o ID da faixa que está tocando. As pastas regionais são Kanto 0, Hoenn 1, Unova 2, Sinnoh 3 e Johto 4.</aside>
+      <aside data-i18n-html="helpTip"><strong>Dica:</strong> no jogo, use <code>/bgm</code> para descobrir o ID da faixa que está tocando. As pastas regionais são Kanto 0, Hoenn 1, Unova 2, Sinnoh 3 e Johto 4.</aside>
       <div class="pack-structure">
-        <h3>Como o pacote é montado</h3>
-        <p>É essa estrutura que sai no ZIP baixado — nada além disso.</p>
+        <h3 data-i18n="packTitle">Como o pacote é montado</h3>
+        <p data-i18n="packDescription">É essa estrutura que sai no ZIP baixado — nada além disso.</p>
         <pre>MeuMOD.zip
 ├── info.xml
 ├── icon.png              (se você escolheu um)
@@ -180,22 +186,26 @@
     └── 3/1116.ogg         Sinnoh</pre>
       </div>
       <div class="version-history">
-        <h3>Histórico de versões</h3>
+        <h3 data-i18n="historyTitle">Histórico de versões</h3>
+        <section>
+          <span class="version-tag">V4</span>
+          <div><strong data-i18n="historyV4Title">NavBGM em português e inglês</strong><p data-i18n="historyV4Text">Alternância de idioma para toda a interface, incluindo instruções e mensagens.</p></div>
+        </section>
         <section>
           <span class="version-tag">V3</span>
-          <div><strong>Catálogo completo e identidade NavBGM</strong><p>IDs de Hoenn e Unova completados, guia de uso integrado, logo animada com nota musical e nova paleta vermelha.</p></div>
+          <div><strong data-i18n="historyV3Title">Catálogo completo e identidade NavBGM</strong><p data-i18n="historyV3Text">IDs de Hoenn e Unova completados, guia de uso integrado, logo animada com nota musical e nova paleta vermelha.</p></div>
         </section>
         <section>
           <span class="version-tag">V2</span>
-          <div><strong>Atualização de MODs</strong><p>Importação de ZIP/MOD existente, preservação de arquivos, aviso de sobrescrita e aplicação de uma música a vários IDs.</p></div>
+          <div><strong data-i18n="historyV2Title">Atualização de MODs</strong><p data-i18n="historyV2Text">Importação de ZIP/MOD existente, preservação de arquivos, aviso de sobrescrita e aplicação de uma música a vários IDs.</p></div>
         </section>
         <section>
           <span class="version-tag">V1</span>
-          <div><strong>Criação de MODs</strong><p>Geração de info.xml, seleção de faixas, envio de músicas OGG, ícone opcional e exportação em ZIP.</p></div>
+          <div><strong data-i18n="historyV1Title">Criação de MODs</strong><p data-i18n="historyV1Text">Geração de info.xml, seleção de faixas, envio de músicas OGG, ícone opcional e exportação em ZIP.</p></div>
         </section>
       </div>
     </div>
-    <div class="help-footer"><span>NavBGM</span><button id="gotIt" class="export-button" type="button">Entendi</button></div>
+    <div class="help-footer"><span>NavBGM</span><button id="gotIt" class="export-button" type="button" data-i18n="gotIt">Entendi</button></div>
   </dialog>
 
   <script src="vendor/jszip.min.js"></script>

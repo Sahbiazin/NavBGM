@@ -4,6 +4,8 @@ Comecei o NavBGM porque montar um MOD de música na mão era repetitivo: renomea
 
 Tudo acontece no navegador. Não tem servidor, não envia seus arquivos para outro lugar e não é um editor de áudio: você escolhe os OGGs e o NavBGM organiza o pacote.
 
+A interface pode ser usada em português ou inglês. É só trocar o idioma no topo da página.
+
 ## Problemas conhecidos
 
 - O regex que lê um MOD importado aceita `.ogg`, `.mp3` e `.wav`, mas o upload só valida

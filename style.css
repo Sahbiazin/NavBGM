@@ -70,6 +70,9 @@ body {
 }
 .help-button:hover { background: #f0526025; }
 
+.language-picker { display: flex; align-items: center; gap: 7px; color: #b7adb1; font: 10px 'DM Mono', monospace; white-space: nowrap; }
+.language-picker select { height: 34px; padding: 6px 9px; font: 11px 'DM Sans', sans-serif; }
+
 /* layout geral ------------------------------------------------------ */
 
 .layout { max-width: 900px; margin: 0 auto; padding: 48px 20px 32px; }
@@ -237,6 +240,7 @@ footer { display: flex; justify-content: space-between; margin-top: 22px; color:
   .brand-emblem, .brand-emblem img { width: 36px; height: 36px; }
   .local-badge { font-size: 0; margin-left: auto; }
   .local-badge i { margin: 0; }
+  .language-picker { margin-left: auto; }
   .help-button { padding: 7px 9px; }
   .layout { padding: 35px 13px 24px; }
   .panel { padding: 19px 15px; }

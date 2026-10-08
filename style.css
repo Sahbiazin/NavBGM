@@ -59,7 +59,7 @@ body {
 .brand small { display: block; font: 9px 'DM Mono', monospace; color: #aaa0a4; letter-spacing: .13em; margin-top: 3px; }
 
 .local-badge { margin-left: auto; font: 10px 'DM Mono', monospace; color: #b7adb1; letter-spacing: .03em; white-space: nowrap; }
-.local-badge i, .eyebrow span {
+.local-badge i, .eyebrow > span:first-child {
   display: inline-block; width: 7px; height: 7px; border-radius: 50%;
   background: var(--mint); box-shadow: 0 0 8px #8ce0c070; margin-right: 7px;
 }

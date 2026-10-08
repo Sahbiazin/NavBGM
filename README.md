@@ -38,10 +38,3 @@ vendor/LICENSE-jszip.markdown
 ```
 
 `vendor/jszip.min.js` permite ler e atualizar pacotes existentes sem enviar os arquivos para um servidor. Os arquivos escolhidos pelo usuário são processados no próprio navegador.
-
-## Publicar no GitHub Pages
-
-1. Crie um repositório e envie os arquivos listados acima, incluindo `assets` e `vendor`.
-2. Abra **Settings → Pages**.
-3. Em **Build and deployment**, escolha **Deploy from a branch**, selecione `main` e a pasta `/ (root)`.
-4. Salve e aguarde o endereço do site aparecer nas configurações do Pages.

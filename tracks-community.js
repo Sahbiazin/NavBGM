@@ -1,11 +1,19 @@
 // IDs adicionais transcritos da lista comunitária enviada pelo usuário.
 // São agregados ao catálogo base para manter cada região em sua pasta numérica.
 (() => {
-  const add = (region, rows) => {
+  function add(region, rows) {
     const known = new Set(window.TRACKS[region].map(([id]) => String(id)));
-    for (const row of rows) if (!known.has(String(row[0]))) { window.TRACKS[region].push(row); known.add(String(row[0])); }
-    window.TRACKS[region].sort((a,b)=>Number(a[0])-Number(b[0]));
-  };
+
+    for (const row of rows) {
+      const id = String(row[0]);
+      if (known.has(id)) continue;
+      window.TRACKS[region].push(row);
+      known.add(id);
+    }
+
+    window.TRACKS[region].sort((a, b) => Number(a[0]) - Number(b[0]));
+  }
+
   add('1', [
     [385,'Trainers Eyes Meet - Swimmer'],[386,'Meteor Falls / Cave of Origin'],
     [392,'Toughness Contest'],[393,'Coolness Contest'],[394,'Beauty Contest'],[395,'Cuteness Contest'],[396,'Smart Contest'],[397,'Trainers Eyes Meet - Gentleman'],

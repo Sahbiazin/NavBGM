@@ -156,6 +156,10 @@ textarea { resize: vertical; }
 .track-meta b { color: #d3c8cc; font-weight: 400; }
 
 .track-list { border: 1px solid #372e32; border-radius: 9px; overflow: hidden; max-height: 420px; overflow-y: auto; }
+.track-group-heading { padding: 11px 13px; border-bottom: 1px solid #49343a; background: #f052600c; }
+.track-group-heading strong, .track-group-heading span { display: block; }
+.track-group-heading strong { color: #ffabb2; font: 600 11px 'Space Grotesk', sans-serif; }
+.track-group-heading span { margin-top: 3px; color: #a99fa3; font-size: 10px; }
 .track-row { display: grid; grid-template-columns: 18px 52px minmax(0, 1fr) auto; align-items: center; gap: 9px; min-height: 48px; padding: 7px 10px; border-bottom: 1px solid #30282c; }
 .track-row:last-child { border-bottom: 0; }
 .track-check { width: 14px; height: 14px; margin: 0; accent-color: var(--accent); }

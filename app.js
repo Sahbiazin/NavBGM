@@ -47,14 +47,18 @@
       helpStep1Title: 'Crie um MOD ou abra um existente',
       helpStep1Text: 'Preencha nome, autor, versão e descrição. Para atualizar, clique em <strong>Abrir MOD</strong> e selecione um arquivo .zip ou .mod. O NavBGM carrega as informações e preserva os arquivos existentes.',
       helpStep2Title: 'Escolha região e faixa',
-      helpStep2Text: 'Selecione uma região, procure pelo nome ou ID e envie um arquivo .ogg. IDs já presentes no MOD aparecem marcados; o sistema pergunta antes de sobrescrevê-los. Use <strong>ID manual</strong> para faixas fora do catálogo.',
+      helpStep2Text: 'Selecione uma região, procure pelo nome ou ID e envie um arquivo .ogg. As faixas da tela de login ficam em Unova (IDs 1159 e 1157). IDs já presentes no MOD aparecem marcados; o sistema pergunta antes de sobrescrevê-los. Use <strong>ID manual</strong> para faixas fora do catálogo.',
       helpStep3Title: 'Aplique uma música a vários IDs',
       helpStep3Text: 'Marque as caixas das faixas desejadas e escolha <strong>Aplicar a mesma música</strong>. O NavBGM avisa se algum ID já existir e permite sobrescrever esses conflitos ou manter as faixas atuais.',
       helpStep4Title: 'Baixe e instale o pacote',
       helpStep4Text: 'Clique em <strong>Baixar pacote .ZIP</strong> e coloque o arquivo em <code>PokeMMO/data/mods</code>. Ative o MOD no gerenciador do jogo. Os arquivos selecionados são processados no navegador e não são enviados a um servidor.',
       helpTip: '<strong>Dica:</strong> no jogo, use <code>/bgm</code> para descobrir o ID da faixa que está tocando. As pastas regionais são Kanto 0, Hoenn 1, Unova 2, Sinnoh 3 e Johto 4.',
       packTitle: 'Como o pacote é montado', packDescription: 'É essa estrutura que sai no ZIP baixado — nada além disso.',
-      historyTitle: 'Histórico de versões', historyV4Title: 'NavBGM em português e inglês',
+      loginTracksTitle: 'Músicas da tela de login', loginTracksDescription: 'Essas faixas ficam na pasta sounds/2 (Unova).',
+      loginTrackMain: 'Tela de login', loginTrackAlternative: 'Tela de login alternativa e incomum',
+      historyTitle: 'Histórico de versões', historyV5Title: 'Músicas da tela de login',
+      historyV5Text: 'Seção dedicada na região Unova para substituir os IDs 1159 e 1157 em sounds/2.',
+      historyV4Title: 'NavBGM em português e inglês',
       historyV4Text: 'Alternância de idioma para toda a interface, incluindo instruções e mensagens.',
       historyV3Title: 'Catálogo completo e identidade NavBGM',
       historyV3Text: 'IDs de Hoenn e Unova completados, guia de uso integrado, logo animada com nota musical e nova paleta vermelha.',
@@ -103,14 +107,18 @@
       helpStep1Title: 'Create a MOD or open an existing one',
       helpStep1Text: 'Enter a name, author, version, and description. To update a MOD, click <strong>Open MOD</strong> and choose a .zip or .mod file. NavBGM loads its details and keeps the existing files.',
       helpStep2Title: 'Choose a region and track',
-      helpStep2Text: 'Select a region, search by name or ID, and upload an .ogg file. Tracks already in the MOD are marked; NavBGM asks before replacing them. Use <strong>Manual ID</strong> for tracks missing from the catalog.',
+      helpStep2Text: 'Select a region, search by name or ID, and upload an .ogg file. Login screen tracks are in Unova (IDs 1159 and 1157). Tracks already in the MOD are marked; NavBGM asks before replacing them. Use <strong>Manual ID</strong> for tracks missing from the catalog.',
       helpStep3Title: 'Use one song for multiple IDs',
       helpStep3Text: 'Check the tracks you want and choose <strong>Apply the same music</strong>. NavBGM warns you if an ID already exists and lets you replace those tracks or keep the current ones.',
       helpStep4Title: 'Download and install the package',
       helpStep4Text: 'Click <strong>Download .ZIP package</strong> and put the file in <code>PokeMMO/data/mods</code>. Enable the MOD in the game’s mod manager. Your files are processed in the browser and are never sent to a server.',
       helpTip: '<strong>Tip:</strong> in game, use <code>/bgm</code> to find the ID of the track that is playing. Region folders are Kanto 0, Hoenn 1, Unova 2, Sinnoh 3, and Johto 4.',
       packTitle: 'How the package is built', packDescription: 'This is the structure inside the downloaded ZIP.',
-      historyTitle: 'Version history', historyV4Title: 'NavBGM in Portuguese and English',
+      loginTracksTitle: 'Login screen music', loginTracksDescription: 'These tracks are saved under sounds/2 (Unova).',
+      loginTrackMain: 'Login screen', loginTrackAlternative: 'Alternative and uncommon login screen',
+      historyTitle: 'Version history', historyV5Title: 'Login screen music',
+      historyV5Text: 'A dedicated Unova section for replacing IDs 1159 and 1157 in sounds/2.',
+      historyV4Title: 'NavBGM in Portuguese and English',
       historyV4Text: 'Switch languages across the interface, including help and messages.',
       historyV3Title: 'Complete catalog and NavBGM identity',
       historyV3Text: 'Added missing Hoenn and Unova IDs, an in-app guide, an animated Poké Ball music logo, and a red color palette.',
@@ -182,6 +190,13 @@
     return `${regionId}:${id}`;
   }
 
+  function trackName(id, name) {
+    if (region.value !== '2') return name;
+    if (String(id) === '1159') return t('loginTrackMain');
+    if (String(id) === '1157') return t('loginTrackAlternative');
+    return name;
+  }
+
   function esc(value) { // escapa & < > " ' nos nomes de arquivo antes de jogar no innerHTML
     return String(value).replace(/[&<>"']/g, (c) => ({
       '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&apos;',
@@ -193,7 +208,7 @@
     const query = $('search').value.trim().toLocaleLowerCase(language === 'pt' ? 'pt-BR' : 'en');
     if (!query) return rows;
     return rows.filter(([id, name]) =>
-      String(id).includes(query) || name.toLocaleLowerCase(language === 'pt' ? 'pt-BR' : 'en').includes(query)
+      String(id).includes(query) || trackName(id, name).toLocaleLowerCase(language === 'pt' ? 'pt-BR' : 'en').includes(query)
     );
   }
 
@@ -213,24 +228,33 @@
       return;
     }
 
-    $('trackList').innerHTML = tracks.map(([id, name]) => {
+    const renderTrack = ([id, name]) => {
       const k = key(id);
       const chosenFile = chosen.get(k);
       const isExisting = existingTracks.has(k);
       const inputId = `upload-${region.value}-${id}`;
+      const displayName = trackName(id, name);
 
       return `
         <div class="track-row ${chosenFile ? 'has-file' : ''} ${isExisting ? 'already-modified' : ''}" data-track="${esc(id)}">
           <input class="track-check" type="checkbox" aria-label="${t('selectTrack', { id: esc(id) })}" data-id="${esc(id)}" ${selectedIds.has(k) ? 'checked' : ''}>
           <span class="track-id">${esc(id)}</span>
-          <span class="track-name" title="${esc(name)}">${esc(name)}${isExisting ? '<small class="modified-badge">NO MOD</small>' : ''}</span>
+          <span class="track-name" title="${esc(displayName)}">${esc(displayName)}${isExisting ? '<small class="modified-badge">NO MOD</small>' : ''}</span>
           <div class="track-upload">
             ${chosenFile ? `<span class="file-name" title="${esc(chosenFile.name)}">${esc(chosenFile.name)}</span><span class="dest-path">→ sounds/${esc(region.value)}/${esc(id)}.ogg</span><button class="file-button remove-file" type="button" data-id="${esc(id)}" aria-label="${t('removeTrack')}">${t('removeTrack')}</button>` : ''}
             <label class="file-button" for="${inputId}">${chosenFile ? t('replaceOgg') : isExisting ? t('overwrite') : t('uploadOgg')}</label>
             <input class="ogg-input" id="${inputId}" data-id="${esc(id)}" type="file" accept=".ogg,audio/ogg" hidden>
           </div>
         </div>`;
-    }).join('');
+    };
+    const loginTrackIds = new Set(['1157', '1159']);
+    const loginTracks = region.value === '2' ? tracks.filter(([id]) => loginTrackIds.has(String(id))) : [];
+    const regularTracks = loginTracks.length ? tracks.filter(([id]) => !loginTrackIds.has(String(id))) : tracks;
+    const loginGroup = loginTracks.length
+      ? `<div class="track-group-heading"><strong>${t('loginTracksTitle')}</strong><span>${t('loginTracksDescription')}</span></div>${loginTracks.map(renderTrack).join('')}`
+      : '';
+
+    $('trackList').innerHTML = `${loginGroup}${regularTracks.map(renderTrack).join('')}`;
 
     $('trackList').querySelectorAll('.ogg-input').forEach(input => input.addEventListener('change', onOgg));
     $('trackList').querySelectorAll('.remove-file').forEach((button) => {

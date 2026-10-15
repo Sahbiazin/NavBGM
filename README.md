@@ -2,16 +2,13 @@
 
 Comecei o NavBGM porque montar um MOD de música na mão era repetitivo: renomear as faixas, escrever o `info.xml` e conferir se o ZIP estava com as pastas certas. A ferramenta cuida dessa parte e também ajuda a atualizar um MOD que já existe.
 
-Tudo acontece no navegador. Não tem servidor, não envia seus arquivos para outro lugar e não é um editor de áudio: você escolhe os OGGs e o NavBGM organiza o pacote.
+Os arquivos de áudio são processados no navegador e não são enviados a um servidor. Arquivos MP3 são decodificados localmente e convertidos para OGG Vorbis. Na primeira conversão, o codificador WebAssembly é carregado sob demanda de uma CDN (requer internet); o áudio permanece no dispositivo.
 
 A interface pode ser usada em português ou inglês. É só trocar o idioma no topo da página.
 
 ## Problemas conhecidos
 
-- O regex que lê um MOD importado aceita `.ogg`, `.mp3` e `.wav`, mas o upload só valida
-  `.ogg` — então se você importar um MOD com faixa em mp3, o NavBGM mostra ela como "já
-  modificada" mas não deixa trocar por outro mp3 direto (precisa ser ogg). Ainda não
-  mexi nisso.
+- O codificador WebAssembly é carregado sob demanda de uma CDN na primeira conversão de MP3 (requer internet). O áudio continua no dispositivo.
 - Alguns MODs mais antigos guardam os arquivos em caminhos fora do padrão
   `sounds/<região>/<id>.ogg` — esses simplesmente não aparecem como faixa reconhecida,
   mas continuam preservados no ZIP de saída.
@@ -24,7 +21,7 @@ A interface pode ser usada em português ou inglês. É só trocar o idioma no t
 - [x] Importar e atualizar um MOD existente sem perder conteúdo
 - [x] Aplicar a mesma música a vários IDs de uma vez
 - [x] Catálogo com IDs de Kanto, Hoenn, Unova, Sinnoh e Johto
-- [ ] Suporte de upload para mp3/wav, já que o import já reconhece esses formatos
+- [x] Upload de MP3 com conversão real para OGG Vorbis no navegador
 - [ ] Algum jeito de pré-ouvir o OGG antes de confirmar o upload
 
 ## Como usar
@@ -32,9 +29,11 @@ A interface pode ser usada em português ou inglês. É só trocar o idioma no t
 1. Abra `index.html` num navegador atualizado e, se precisar, use o botão **Como usar**.
 2. Preencha os dados do MOD e escolha um ícone, se quiser.
 3. Para atualizar um pacote, clique em **Abrir MOD** e selecione o `.zip` ou `.mod`.
-4. Escolha uma região e envie um arquivo `.ogg`. O app pergunta antes de sobrescrever uma faixa.
+4. Escolha uma região e envie um arquivo `.ogg` ou `.mp3`. O MP3 é convertido para OGG Vorbis. O app pergunta antes de sobrescrever uma faixa.
 5. Você também pode marcar vários IDs para aplicar a mesma música a todos eles.
 6. Baixe o ZIP e coloque-o na pasta de mods do jogo.
+
+A conversão usa wasm-media-encoders 0.7.0, sob licença MIT: https://github.com/arseneyr/wasm-media-encoders.
 
 No jogo, `/bgm` mostra o ID da faixa que está tocando. As regiões usam as pastas Kanto 0, Hoenn 1, Unova 2, Sinnoh 3 e Johto 4.
 

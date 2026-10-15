@@ -11,6 +11,8 @@
   let iconFile = null;
   let originalIcon = null;
   let originalFileCount = 0;
+  let encoderScript = null;
+  let audioBusy = false;
 
   const $ = (id) => document.getElementById(id);
   const region = $('region');
@@ -30,11 +32,11 @@
       versionLabel: 'Versão', descriptionLabel: 'Descrição', descriptionPlaceholder: 'Conte um pouco sobre a seleção de músicas...',
       iconLabel: 'Ícone do MOD <small>OPCIONAL · PNG quadrado recomendado</small>', noIcon: 'Nenhum ícone selecionado',
       preservedIcon: 'Ícone existente será preservado', choosePng: 'Escolher PNG', tracksTitle: 'Escolha as faixas',
-      tracksDescription: 'Selecione a região, encontre as músicas e envie um arquivo OGG para cada faixa.',
+      tracksDescription: 'Selecione a região, encontre as músicas e envie OGG Vorbis ou MP3. A conversão requer internet; o áudio não é enviado.',
       regionLabel: 'Região', searchPlaceholder: 'Buscar faixa ou ID...', manualButton: '＋ ID manual',
       selectedZero: '0 IDs selecionados', selectedOne: '1 ID selecionado', selectedMany: '{count} IDs selecionados',
       bulkButton: '♫ Aplicar a mesma música', clearSelection: 'Limpar seleção', loadingTracks: 'Carregando faixas',
-      formatHint: 'Formato aceito: <b>.ogg</b>', formatHintImported: 'Formato aceito: <b>.ogg</b> · arquivos originais serão mantidos',
+      formatHint: 'Aceitos: <b>.ogg</b> e <b>.mp3</b> · conversão local para OGG Vorbis (requer internet)', formatHintImported: 'Aceitos: <b>.ogg</b> e <b>.mp3</b> · conversão local (requer internet); originais preservados', convertingAudio: 'Convertendo para OGG Vorbis…',
       emptyHint: 'Não encontrou a faixa? Use <strong>+ ID manual</strong>. Você pode conferir o ID atual no jogo com <code>/bgm</code>.',
       summaryReady: 'Seu pacote está quase pronto', summaryAddTrack: 'Adicione pelo menos uma faixa para exportar.',
       summaryPreparedOne: '1 alteração preparada', summaryPreparedMany: '{count} alterações preparadas',
@@ -42,21 +44,21 @@
       summaryKeepOne: 'O MOD carregado será preservado com 1 arquivo original e suas alterações.',
       summaryKeepMany: 'O MOD carregado será preservado com {count} arquivos originais e suas alterações.',
       summaryZipOne: 'Baixe o ZIP com 1 arquivo OGG.', summaryZipMany: 'Baixe o ZIP com {count} arquivos OGG.',
-      exportButton: 'Baixar pacote .ZIP', privacyNotice: 'Os arquivos são processados apenas no seu dispositivo.',
+      exportButton: 'Baixar pacote .ZIP', privacyNotice: 'Os arquivos de áudio não saem do dispositivo; o codificador OGG é baixado ao converter MP3.',
       helpEyebrow: 'GUIA RÁPIDO', helpTitle: 'Como usar o NavBGM', closeHelp: 'Fechar instruções',
       helpStep1Title: 'Crie um MOD ou abra um existente',
       helpStep1Text: 'Preencha nome, autor, versão e descrição. Para atualizar, clique em <strong>Abrir MOD</strong> e selecione um arquivo .zip ou .mod. O NavBGM carrega as informações e preserva os arquivos existentes.',
       helpStep2Title: 'Escolha região e faixa',
-      helpStep2Text: 'Selecione uma região, procure pelo nome ou ID e envie um arquivo .ogg. As faixas da tela de login ficam em Unova (IDs 1159 e 1157). IDs já presentes no MOD aparecem marcados; o sistema pergunta antes de sobrescrevê-los. Use <strong>ID manual</strong> para faixas fora do catálogo.',
+      helpStep2Text: 'Selecione uma região, procure pelo nome ou ID e envie OGG Vorbis ou MP3 (conversão local; requer internet). As faixas da tela de login ficam em Unova (IDs 1159 e 1157). IDs já presentes no MOD aparecem marcados; o sistema pergunta antes de sobrescrevê-los. Use <strong>ID manual</strong> para faixas fora do catálogo.',
       helpStep3Title: 'Aplique uma música a vários IDs',
       helpStep3Text: 'Marque as caixas das faixas desejadas e escolha <strong>Aplicar a mesma música</strong>. O NavBGM avisa se algum ID já existir e permite sobrescrever esses conflitos ou manter as faixas atuais.',
       helpStep4Title: 'Baixe e instale o pacote',
-      helpStep4Text: 'Clique em <strong>Baixar pacote .ZIP</strong> e coloque o arquivo em <code>PokeMMO/data/mods</code>. Ative o MOD no gerenciador do jogo. Os arquivos selecionados são processados no navegador e não são enviados a um servidor.',
+      helpStep4Text: 'Clique em <strong>Baixar pacote .ZIP</strong> e coloque o arquivo em <code>PokeMMO/data/mods</code>. Ative o MOD no gerenciador do jogo. O áudio é processado no navegador e não é enviado a um servidor; ao converter MP3, o codificador é baixado sob demanda.',
       helpTip: '<strong>Dica:</strong> no jogo, use <code>/bgm</code> para descobrir o ID da faixa que está tocando. As pastas regionais são Kanto 0, Hoenn 1, Unova 2, Sinnoh 3 e Johto 4.',
       packTitle: 'Como o pacote é montado', packDescription: 'É essa estrutura que sai no ZIP baixado — nada além disso.',
       loginTracksTitle: 'Músicas da tela de login', loginTracksDescription: 'Essas faixas ficam na pasta sounds/2 (Unova).',
       loginTrackMain: 'Tela de login', loginTrackAlternative: 'Tela de login alternativa e incomum',
-      historyTitle: 'Histórico de versões', historyV5Title: 'Músicas da tela de login',
+      historyTitle: 'Histórico de versões', historyV6Title: 'Conversão de áudio', historyV6Text: 'Envie MP3 e converta para OGG Vorbis no navegador antes de montar o pacote.', historyV5Title: 'Músicas da tela de login',
       historyV5Text: 'Seção dedicada na região Unova para substituir os IDs 1159 e 1157 em sounds/2.',
       historyV4Title: 'NavBGM em português e inglês',
       historyV4Text: 'Alternância de idioma para toda a interface, incluindo instruções e mensagens.',
@@ -66,7 +68,7 @@
       historyV1Title: 'Criação de MODs', historyV1Text: 'Geração de info.xml, seleção de faixas, envio de músicas OGG, ícone opcional e exportação em ZIP.', gotIt: 'Entendi',
       noTracks: 'Nenhuma faixa encontrada. Tente outra busca ou informe um ID manualmente.', trackCount: '{visible} faixas documentadas · {modified} já modificadas no MOD',
       selectTrack: 'Selecionar {id}', removeTrack: 'Remover música', replaceOgg: 'Trocar OGG', overwrite: 'Sobrescrever', uploadOgg: '＋ Enviar OGG',
-      invalidOgg: 'Escolha um arquivo com extensão .ogg.', overwriteOne: 'O ID {id} já tem uma música neste MOD. Deseja sobrescrever?',
+      invalidOgg: 'Envie um MP3 ou um OGG Vorbis válido.', conversionError: 'Não foi possível converter este MP3: {error}', overwriteOne: 'O ID {id} já tem uma música neste MOD. Deseja sobrescrever?',
       exportOriginalTitle: '{count} alteração(ões) preparada(s)', exportTracksTitle: '{count} faixa(s) pronta(s) para o pacote',
       invalidMod: 'Escolha um arquivo .zip ou .mod.', missingInfo: 'Não encontrei o info.xml no pacote.',
       invalidXml: 'O info.xml do MOD não pôde ser lido.', iconStatusImported: '{count} faixa(s) encontrada(s)',
@@ -90,11 +92,11 @@
       versionLabel: 'Version', descriptionLabel: 'Description', descriptionPlaceholder: 'Tell us a little about your music selection...',
       iconLabel: 'MOD icon <small>OPTIONAL · SQUARE PNG RECOMMENDED</small>', noIcon: 'No icon selected',
       preservedIcon: 'Existing icon will be kept', choosePng: 'Choose PNG', tracksTitle: 'Choose tracks',
-      tracksDescription: 'Select a region, find the music, and upload an OGG file for each track.',
+      tracksDescription: 'Select a region, find the music, and upload OGG Vorbis or MP3. Conversion requires internet; audio is not uploaded.',
       regionLabel: 'Region', searchPlaceholder: 'Search by track or ID...', manualButton: '＋ Manual ID',
       selectedZero: '0 IDs selected', selectedOne: '1 ID selected', selectedMany: '{count} IDs selected',
       bulkButton: '♫ Apply the same music', clearSelection: 'Clear selection', loadingTracks: 'Loading tracks',
-      formatHint: 'Accepted format: <b>.ogg</b>', formatHintImported: 'Accepted format: <b>.ogg</b> · original files will be kept',
+      formatHint: 'Accepted: <b>.ogg</b> and <b>.mp3</b> · local conversion to OGG Vorbis (internet required)', formatHintImported: 'Accepted: <b>.ogg</b> and <b>.mp3</b> · local conversion (internet required); originals kept', convertingAudio: 'Converting to OGG Vorbis…',
       emptyHint: 'Can’t find the track? Use <strong>+ Manual ID</strong>. In game, use <code>/bgm</code> to check the current ID.',
       summaryReady: 'Your package is almost ready', summaryAddTrack: 'Add at least one track to export.',
       summaryPreparedOne: '1 change ready', summaryPreparedMany: '{count} changes ready',
@@ -102,21 +104,21 @@
       summaryKeepOne: 'The loaded MOD will keep its 1 original file along with your changes.',
       summaryKeepMany: 'The loaded MOD will keep its {count} original files along with your changes.',
       summaryZipOne: 'Download the ZIP with 1 OGG file.', summaryZipMany: 'Download the ZIP with {count} OGG files.',
-      exportButton: 'Download .ZIP package', privacyNotice: 'Files are processed only on your device.',
+      exportButton: 'Download .ZIP package', privacyNotice: 'Audio stays on your device; the OGG encoder downloads when converting MP3.',
       helpEyebrow: 'QUICK GUIDE', helpTitle: 'How to use NavBGM', closeHelp: 'Close instructions',
       helpStep1Title: 'Create a MOD or open an existing one',
       helpStep1Text: 'Enter a name, author, version, and description. To update a MOD, click <strong>Open MOD</strong> and choose a .zip or .mod file. NavBGM loads its details and keeps the existing files.',
       helpStep2Title: 'Choose a region and track',
-      helpStep2Text: 'Select a region, search by name or ID, and upload an .ogg file. Login screen tracks are in Unova (IDs 1159 and 1157). Tracks already in the MOD are marked; NavBGM asks before replacing them. Use <strong>Manual ID</strong> for tracks missing from the catalog.',
+      helpStep2Text: 'Select a region, search by name or ID, and upload OGG Vorbis or MP3 (local conversion; internet required). Login screen tracks are in Unova (IDs 1159 and 1157). Tracks already in the MOD are marked; NavBGM asks before replacing them. Use <strong>Manual ID</strong> for tracks missing from the catalog.',
       helpStep3Title: 'Use one song for multiple IDs',
       helpStep3Text: 'Check the tracks you want and choose <strong>Apply the same music</strong>. NavBGM warns you if an ID already exists and lets you replace those tracks or keep the current ones.',
       helpStep4Title: 'Download and install the package',
-      helpStep4Text: 'Click <strong>Download .ZIP package</strong> and put the file in <code>PokeMMO/data/mods</code>. Enable the MOD in the game’s mod manager. Your files are processed in the browser and are never sent to a server.',
+      helpStep4Text: 'Click <strong>Download .ZIP package</strong> and put the file in <code>PokeMMO/data/mods</code>. Enable the MOD in the game’s mod manager. Audio is processed in your browser and is never sent to a server; the encoder downloads on demand for MP3 conversion.',
       helpTip: '<strong>Tip:</strong> in game, use <code>/bgm</code> to find the ID of the track that is playing. Region folders are Kanto 0, Hoenn 1, Unova 2, Sinnoh 3, and Johto 4.',
       packTitle: 'How the package is built', packDescription: 'This is the structure inside the downloaded ZIP.',
       loginTracksTitle: 'Login screen music', loginTracksDescription: 'These tracks are saved under sounds/2 (Unova).',
       loginTrackMain: 'Login screen', loginTrackAlternative: 'Alternative and uncommon login screen',
-      historyTitle: 'Version history', historyV5Title: 'Login screen music',
+      historyTitle: 'Version history', historyV6Title: 'Audio conversion', historyV6Text: 'Upload MP3 and convert it to OGG Vorbis in your browser before packaging.', historyV5Title: 'Login screen music',
       historyV5Text: 'A dedicated Unova section for replacing IDs 1159 and 1157 in sounds/2.',
       historyV4Title: 'NavBGM in Portuguese and English',
       historyV4Text: 'Switch languages across the interface, including help and messages.',
@@ -126,7 +128,7 @@
       historyV1Title: 'MOD creation', historyV1Text: 'Generate info.xml, choose tracks, upload OGG music, add an optional icon, and export as ZIP.', gotIt: 'Got it',
       noTracks: 'No tracks found. Try another search or enter an ID manually.', trackCount: '{visible} documented tracks · {modified} already changed in this MOD',
       selectTrack: 'Select {id}', removeTrack: 'Remove music', replaceOgg: 'Replace OGG', overwrite: 'Overwrite', uploadOgg: '＋ Upload OGG',
-      invalidOgg: 'Choose a file with the .ogg extension.', overwriteOne: 'ID {id} already has music in this MOD. Do you want to overwrite it?',
+      invalidOgg: 'Upload an MP3 or a valid OGG Vorbis file.', conversionError: 'Could not convert this MP3: {error}', overwriteOne: 'ID {id} already has music in this MOD. Do you want to overwrite it?',
       exportOriginalTitle: '{count} change(s) ready', exportTracksTitle: '{count} track(s) ready for the package',
       invalidMod: 'Choose a .zip or .mod file.', missingInfo: 'Could not find info.xml in the package.',
       invalidXml: 'Could not read this MOD’s info.xml.', iconStatusImported: '{count} track(s) found',
@@ -243,7 +245,7 @@
           <div class="track-upload">
             ${chosenFile ? `<span class="file-name" title="${esc(chosenFile.name)}">${esc(chosenFile.name)}</span><span class="dest-path">→ sounds/${esc(region.value)}/${esc(id)}.ogg</span><button class="file-button remove-file" type="button" data-id="${esc(id)}" aria-label="${t('removeTrack')}">${t('removeTrack')}</button>` : ''}
             <label class="file-button" for="${inputId}">${chosenFile ? t('replaceOgg') : isExisting ? t('overwrite') : t('uploadOgg')}</label>
-            <input class="ogg-input" id="${inputId}" data-id="${esc(id)}" type="file" accept=".ogg,audio/ogg" hidden>
+            <input class="ogg-input" id="${inputId}" data-id="${esc(id)}" type="file" accept=".ogg,.mp3,audio/ogg,audio/mpeg" hidden>
           </div>
         </div>`;
     };
@@ -274,18 +276,60 @@
     updateSummary();
   }
 
-  // o import aceita outros formatos, mas o editor trabalha só com OGG por enquanto
-  function checkOgg(file) {
-    if (file && !file.name.toLowerCase().endsWith('.ogg')) {
-      alert(t('invalidOgg'));
-      return false;
+  async function loadVorbisEncoder() {
+    if (!encoderScript) {
+      encoderScript = new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = 'https://unpkg.com/wasm-media-encoders@0.7.0/dist/umd/WasmMediaEncoder.min.js';
+        script.onload = resolve;
+        script.onerror = () => reject(new Error('Encoder download failed'));
+        document.head.append(script);
+      });
     }
-    return !!file;
+    await encoderScript;
+    return window.WasmMediaEncoder.createOggEncoder();
   }
 
-  function onOgg(event) {
+  async function prepareAudio(file) {
+    if (!file) return null;
+    const data = new Uint8Array(await file.slice(0, 4).arrayBuffer());
+    const header = new Uint8Array(await file.slice(0, 64).arrayBuffer());
+    const headerText = String.fromCharCode(...header);
+    const isOgg = headerText.startsWith('OggS') && headerText.includes('\x01vorbis');
+    const isMp3 = data.length >= 3 && ((data[0] === 0x49 && data[1] === 0x44 && data[2] === 0x33)
+      || (data[0] === 0xff && (data[1] & 0xe0) === 0xe0));
+    if (isOgg) return file;
+    if (!isMp3) throw new Error(t('invalidOgg'));
+
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContextClass) throw new Error(t('invalidOgg'));
+    const context = new AudioContextClass();
+    try {
+      const buffer = await context.decodeAudioData(await file.arrayBuffer());
+      const channels = Math.min(buffer.numberOfChannels, 2);
+      const encoder = await loadVorbisEncoder();
+      encoder.configure({ sampleRate: buffer.sampleRate, channels, vbrQuality: 4 });
+      const chunks = [];
+      const chunkSize = 16384;
+      for (let start = 0; start < buffer.length; start += chunkSize) {
+        const end = Math.min(start + chunkSize, buffer.length);
+        const pcm = Array.from({ length: channels }, (_, channel) => buffer.getChannelData(channel).subarray(start, end));
+        const part = encoder.encode(pcm);
+        if (part.length) chunks.push(new Uint8Array(part));
+      }
+      const last = encoder.finalize();
+      if (last.length) chunks.push(new Uint8Array(last));
+      if (!chunks.length || String.fromCharCode(...chunks[0].subarray(0, 4)) !== 'OggS') throw new Error(t('invalidOgg'));
+      const name = file.name.replace(/\.[^.]+$/, '') + '.ogg';
+      return new File(chunks, name, { type: 'audio/ogg' });
+    } finally {
+      await context.close();
+    }
+  }
+
+  async function onOgg(event) {
     const file = event.target.files[0];
-    if (!checkOgg(file)) return;
+    if (!file) return;
 
     const id = event.target.dataset.id;
     const k = key(id);
@@ -293,8 +337,21 @@
       event.target.value = '';
       return;
     }
-    chosen.set(k, file);
-    render();
+    audioBusy = true;
+    $('formatHint').textContent = t('convertingAudio');
+    updateSummary();
+    try {
+      const prepared = await prepareAudio(file);
+      if (prepared) chosen.set(k, prepared);
+      render();
+    } catch (error) {
+      alert(t('conversionError', { error: error.message }));
+    } finally {
+      audioBusy = false;
+      $('formatHint').innerHTML = t(importedModName ? 'formatHintImported' : 'formatHint');
+      updateSummary();
+      event.target.value = '';
+    }
   }
 
   function updateSummary() {
@@ -309,7 +366,7 @@
       ? original === 1 ? t('summaryKeepOne') : t('summaryKeepMany', { count: original })
       : n ? n === 1 ? t('summaryZipOne') : t('summaryZipMany', { count: n }) : t('summaryAddTrack');
 
-    $('exportButton').disabled = (n === 0 && original === 0)
+    $('exportButton').disabled = audioBusy || (n === 0 && original === 0)
       || !$('modName').value.trim()
       || !$('author').value.trim()
       || !$('version').value.trim();
@@ -378,7 +435,7 @@
   }
 
   async function applyToSelected(file) {
-    if (!checkOgg(file)) return;
+    if (!file || !selectedIds.size) return;
 
     const conflicts = [...selectedIds].filter((k) => existingTracks.has(k));
     let overwrite = false;
@@ -387,11 +444,24 @@
       overwrite = confirm(t('overwriteMany', { ids: names }));
     }
 
-    for (const k of selectedIds) {
-      if (!existingTracks.has(k) || overwrite) chosen.set(k, file);
+    audioBusy = true;
+    $('formatHint').textContent = t('convertingAudio');
+    updateSummary();
+    try {
+      const prepared = await prepareAudio(file);
+      if (!prepared) return;
+      for (const k of selectedIds) {
+        if (!existingTracks.has(k) || overwrite) chosen.set(k, prepared);
+      }
+      selectedIds.clear();
+      render();
+    } catch (error) {
+      alert(t('conversionError', { error: error.message }));
+    } finally {
+      audioBusy = false;
+      $('formatHint').innerHTML = t(importedModName ? 'formatHintImported' : 'formatHint');
+      updateSummary();
     }
-    selectedIds.clear();
-    render();
   }
 
   async function saveMod() {

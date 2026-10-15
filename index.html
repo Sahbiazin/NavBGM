@@ -113,7 +113,7 @@
         <span id="selectedCount">0 IDs selecionados</span>
         <button id="bulkUploadButton" class="text-button" type="button" data-i18n="bulkButton">♫ Aplicar a mesma música</button>
         <button id="clearSelection" class="quiet-button" type="button" data-i18n="clearSelection">Limpar seleção</button>
-        <input id="bulkFile" type="file" accept=".ogg,audio/ogg" hidden>
+        <input id="bulkFile" type="file" accept=".ogg,.mp3,audio/ogg,audio/mpeg" hidden>
       </div>
       <div class="track-meta">
         <span id="trackCount">Carregando faixas</span>
@@ -188,6 +188,10 @@
       </div>
       <div class="version-history">
         <h3 data-i18n="historyTitle">Histórico de versões</h3>
+        <section>
+          <span class="version-tag">V6</span>
+          <div><strong data-i18n="historyV6Title">Conversão de áudio</strong><p data-i18n="historyV6Text">Envie MP3 e converta para OGG Vorbis no navegador antes de montar o pacote.</p></div>
+        </section>
         <section>
           <span class="version-tag">V5</span>
           <div><strong data-i18n="historyV5Title">Músicas da tela de login</strong><p data-i18n="historyV5Text">Seção dedicada na região Unova para substituir os IDs 1159 e 1157 em sounds/2.</p></div>

@@ -19,6 +19,14 @@
   const encoder = new TextEncoder();
   const translations = {
     pt: {
+      mixTitle: 'Faixas no pacote',
+      packageOnly: 'Mostrar só faixas do pacote',
+      listen: 'Ouvir',
+      closePreview: 'Fechar prévia',
+      noPackage: 'Nenhuma faixa do pacote corresponde aos filtros desta região.',
+      inMod: 'No MOD',
+      previewError: 'Não foi possível abrir este áudio.',
+      resultCount: '{visible} resultado(s) · {modified} no pacote nesta região',
       pageTitle: 'NavBGM — Criador de MODs de Música para PokéMMO', brandTagline: 'POKÉMMO MUSIC BUILDER',
       localStatus: 'funciona localmente no seu navegador', languageLabel: 'Idioma', helpButton: 'Como usar',
       introEyebrow: 'NAVBGM · CRIADOR DE MODS DE MÚSICA', introTitle: 'Sua trilha.<br><em>Sua jornada.</em>',
@@ -79,6 +87,14 @@
       customTrack: 'Faixa personalizada', duplicateTrackId: 'Este ID já está listado nesta região.', invalidPng: 'O ícone deve estar no formato PNG.',
     },
     en: {
+      mixTitle: 'Tracks in package',
+      packageOnly: 'Show package tracks only',
+      listen: 'Listen',
+      closePreview: 'Close preview',
+      noPackage: 'No package tracks match the filters in this region.',
+      inMod: 'In mod',
+      previewError: 'Could not open this audio file.',
+      resultCount: '{visible} result(s) · {modified} in package in this region',
       pageTitle: 'NavBGM — PokéMMO Music Mod Builder', brandTagline: 'POKÉMMO MUSIC BUILDER',
       localStatus: 'runs locally in your browser', languageLabel: 'Language', helpButton: 'How to use',
       introEyebrow: 'NAVBGM · MUSIC MOD BUILDER', introTitle: 'Your soundtrack.<br><em>Your journey.</em>',
@@ -205,27 +221,78 @@
     }[c]));
   }
 
-  function visibleTracks() {
+  function regionRows() {
     const rows = [...(window.TRACKS[region.value] || []), ...extras[region.value]];
-    const query = $('search').value.trim().toLocaleLowerCase(language === 'pt' ? 'pt-BR' : 'en');
-    if (!query) return rows;
-    return rows.filter(([id, name]) =>
-      String(id).includes(query) || trackName(id, name).toLocaleLowerCase(language === 'pt' ? 'pt-BR' : 'en').includes(query)
-    );
+    const known = new Set(rows.map(([id]) => String(id)));
+    for (const k of existingTracks.keys()) {
+      const [area, id] = k.split(':');
+      if (area === region.value && !known.has(id)) rows.push([id, t('customTrack')]);
+    }
+    return rows;
+  }
+
+  function visibleTracks() {
+    const normalize = value => String(value).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+    const query = normalize($('search').value.trim());
+    return regionRows().filter(([id, name]) => {
+      const k = key(id);
+      if ($('packageOnly').checked && !chosen.has(k) && !existingTracks.has(k)) return false;
+      return [id, trackName(id, name), chosen.get(k)?.name || ''].some(value => normalize(value).includes(query));
+    });
+  }
+
+  let previewVersion = 0;
+  let previewUrl;
+  function closePreview() {
+    previewVersion++;
+    if (!previewUrl) return;
+    const player = $('player');
+    player.pause();
+    player.removeAttribute('src');
+    player.load();
+    URL.revokeObjectURL(previewUrl);
+    previewUrl = null;
+    $('preview').hidden = true;
+  }
+
+  async function previewTrack(button) {
+    closePreview();
+    const version = previewVersion;
+    const k = key(button.dataset.id);
+    try {
+      const file = chosen.get(k) || await baseFiles.get(existingTracks.get(k)).async('blob');
+      if (version !== previewVersion) return;
+      previewUrl = URL.createObjectURL(file);
+      $('previewName').textContent = button.getAttribute('aria-label');
+      $('preview').hidden = false;
+      $('player').src = previewUrl;
+      await $('player').play();
+    } catch (error) {
+      if (version === previewVersion && error.name !== 'NotAllowedError') {
+        closePreview();
+        alert(t('previewError'));
+      }
+    }
   }
 
   function render() {
+    closePreview();
     const tracks = visibleTracks();
-    const modifiedInRegion = [...existingTracks.keys()].filter((k) => k.startsWith(`${region.value}:`)).length;
-
-    $('trackCount').textContent = t('trackCount', { visible: tracks.length, modified: modifiedInRegion });
+    const packageKeys = new Set([...existingTracks.keys(), ...chosen.keys()]);
+    const counts = [0, 0, 0, 0, 0];
+    for (const k of packageKeys) counts[k.split(':')[0]]++;
+    $('mixTotal').textContent = packageKeys.size;
+    $('regionCounts').innerHTML = counts.map((count, id) =>
+      `<div class="${count ? 'populated' : ''}"><span>${REGIONS[id]}</span><b>${count}</b></div>`
+    ).join('');
+    $('trackCount').textContent = t('resultCount', { visible: tracks.length, modified: counts[region.value] });
     $('bulkBar').hidden = selectedIds.size === 0;
     $('selectedCount').textContent = selectedIds.size === 0
       ? t('selectedZero')
       : selectedIds.size === 1 ? t('selectedOne') : t('selectedMany', { count: selectedIds.size });
 
     if (!tracks.length) {
-      $('trackList').innerHTML = `<div class="empty-state">${t('noTracks')}</div>`;
+      $('trackList').innerHTML = `<div class="empty-state">${t($('packageOnly').checked ? 'noPackage' : 'noTracks')}</div>`;
       updateSummary();
       return;
     }
@@ -241,8 +308,9 @@
         <div class="track-row ${chosenFile ? 'has-file' : ''} ${isExisting ? 'already-modified' : ''}" data-track="${esc(id)}">
           <input class="track-check" type="checkbox" aria-label="${t('selectTrack', { id: esc(id) })}" data-id="${esc(id)}" ${selectedIds.has(k) ? 'checked' : ''}>
           <span class="track-id">${esc(id)}</span>
-          <span class="track-name" title="${esc(displayName)}">${esc(displayName)}${isExisting ? '<small class="modified-badge">NO MOD</small>' : ''}</span>
+          <span class="track-name" title="${esc(displayName)}">${esc(displayName)}${isExisting ? `<small class="modified-badge">${t('inMod')}</small>` : ''}</span>
           <div class="track-upload">
+            ${chosenFile || isExisting ? `<button class="file-button listen" type="button" data-id="${esc(id)}" aria-label="${t('listen')} · ${esc(displayName)} · ${esc(id)}">${t('listen')}</button>` : ''}
             ${chosenFile ? `<span class="file-name" title="${esc(chosenFile.name)}">${esc(chosenFile.name)}</span><span class="dest-path">→ sounds/${esc(region.value)}/${esc(id)}.ogg</span><button class="file-button remove-file" type="button" data-id="${esc(id)}" aria-label="${t('removeTrack')}">${t('removeTrack')}</button>` : ''}
             <label class="file-button" for="${inputId}">${chosenFile ? t('replaceOgg') : isExisting ? t('overwrite') : t('uploadOgg')}</label>
             <input class="ogg-input" id="${inputId}" data-id="${esc(id)}" type="file" accept=".ogg,.mp3,audio/ogg,audio/mpeg" hidden>
@@ -520,7 +588,7 @@
         idInput.focus();
         return;
       }
-      const alreadyListed = [...(window.TRACKS[region.value] || []), ...extras[region.value]]
+      const alreadyListed = regionRows()
         .some((track) => String(track[0]) === id);
       if (alreadyListed) {
         idInput.setCustomValidity(t('duplicateTrackId'));
@@ -528,12 +596,19 @@
         return;
       }
 
+      $('packageOnly').checked = false;
       extras[region.value].push([id, name]);
       $('search').value = '';
       render();
     });
   }
 
+  $('trackList').addEventListener('click', event => {
+    const button = event.target.closest('.listen');
+    if (button) previewTrack(button);
+  });
+  $('closePreview').addEventListener('click', closePreview);
+  $('packageOnly').addEventListener('change', render);
   region.addEventListener('change', render);
   $('search').addEventListener('input', render);
   $('manualButton').addEventListener('click', addManualTrack);

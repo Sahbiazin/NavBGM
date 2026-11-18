@@ -32,14 +32,15 @@
       <div class="eyebrow"><span></span> <span data-i18n="introEyebrow">NAVBGM · CRIADOR DE MODS DE MÚSICA</span></div>
       <h1 id="introTitle" data-i18n-html="introTitle">Sua trilha.<br><em>Sua jornada.</em></h1>
       <p data-i18n="introDescription">Monte sua seleção de músicas e prepare um pacote pronto para adicionar ao PokéMMO.</p>
+      <aside class="mix-card"><h2 data-i18n="mixTitle">Faixas no pacote</h2><strong id="mixTotal">0</strong><div class="record" aria-hidden="true"></div><div id="regionCounts"></div></aside>
       <div class="steps">
-        <span class="step-active">01 <b data-i18n="stepIdentity">Identidade</b></span>
-        <span>02 <b data-i18n="stepTracks">Faixas</b></span>
-        <span>03 <b data-i18n="stepExport">Exportar</b></span>
+        <a href="#identity">01 <b data-i18n="stepIdentity">Identidade</b></a>
+        <a href="#tracks">02 <b data-i18n="stepTracks">Faixas</b></a>
+        <a href="#export">03 <b data-i18n="stepExport">Exportar</b></a>
       </div>
     </section>
 
-    <section class="panel identity">
+    <section id="identity" class="panel identity">
       <div class="section-heading">
         <span class="number">01</span>
         <div>
@@ -84,7 +85,7 @@
       </div>
     </section>
 
-    <section class="panel tracks-panel">
+    <section id="tracks" class="panel tracks-panel">
       <div class="section-heading">
         <span class="number">02</span>
         <div>
@@ -105,7 +106,7 @@
         </label>
         <label class="search">
           <span>⌕</span>
-          <input id="search" placeholder="Buscar faixa ou ID..." data-i18n-placeholder="searchPlaceholder">
+          <input type="search" data-i18n-aria-label="searchPlaceholder" id="search" placeholder="Buscar faixa ou ID..." data-i18n-placeholder="searchPlaceholder">
         </label>
         <button class="text-button" id="manualButton" type="button" data-i18n="manualButton">＋ ID manual</button>
       </div>
@@ -115,6 +116,8 @@
         <button id="clearSelection" class="quiet-button" type="button" data-i18n="clearSelection">Limpar seleção</button>
         <input id="bulkFile" type="file" accept=".ogg,.mp3,audio/ogg,audio/mpeg" hidden>
       </div>
+      <label class="package-filter"><input type="checkbox" id="packageOnly"><span data-i18n="packageOnly">Mostrar só faixas do pacote</span></label>
+      <div id="preview" hidden><strong id="previewName"></strong><audio id="player" controls></audio><button id="closePreview" class="file-button" type="button" data-i18n="closePreview">Fechar prévia</button></div>
       <div class="track-meta">
         <span id="trackCount">Carregando faixas</span>
         <span id="formatHint" data-i18n-html="formatHint">Formato aceito: <b>.ogg</b></span>
@@ -123,7 +126,7 @@
       <div class="empty-hint" data-i18n-html="emptyHint">Não encontrou a faixa? Use <strong>+ ID manual</strong>. Você pode conferir o ID atual no jogo com <code>/bgm</code>.</div>
     </section>
 
-    <section class="export-bar">
+    <section id="export" class="export-bar">
       <div class="export-summary">
         <div class="summary-icon">♫</div>
         <div>
